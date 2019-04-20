@@ -30,19 +30,25 @@ const RenderDish = ({ dish }) => {
 }
 
 const RenderComments = ({ comments }) => {
+
+    const comment = comments.map((comment) => {
+        return (
+            <li className={'mb-2'}>
+                <p>{comment.comment}</p>
+                <p>-- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}</p>
+            </li>
+        );
+    });
+
     if (comments != null) {
-        return comments.map((comment) => {
-            return (
+        return (
+            <div>
                 <ul key={comment.id} className={'list-unstyled'}>
-                    <li className={'mb-2'}>
-                        {comment.comment}
-                    </li>
-                    <li>
-                        -- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}
-                    </li>
-                </ul >
-            );
-        })
+                    {comment}
+                </ul>
+                <CommentForm />
+            </div>
+        )
     } else {
         return (
             <div></div>
@@ -50,8 +56,32 @@ const RenderComments = ({ comments }) => {
     }
 }
 
+const DishDetail = (props) => {
+    return (
+        <div className="container">
+            <div className="row">
+                <Breadcrumb>
+                    <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                    <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                </Breadcrumb>
+                <div className="col-12">
+                    <h3>{props.dish.name}</h3>
+                    <hr />
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-12 col-md-5 m-1">
+                    <RenderDish dish={props.dish} />
+                </div>
+                <div className="col-12 col-md-5 m-1">
+                    <RenderComments comments={props.comments} />
+                </div>
+            </div>
+        </div>
+    );
+}
 
-class DishDetail extends React.Component {
+class CommentForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -86,30 +116,12 @@ class DishDetail extends React.Component {
 
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <Breadcrumb>
-                        <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>{this.props.dish.name}</BreadcrumbItem>
-                    </Breadcrumb>
-                    <div className="col-12">
-                        <h3>{this.props.dish.name}</h3>
-                        <hr />
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-12 col-md-5 m-1">
-                        <RenderDish dish={this.props.dish} />
-                    </div>
-                    <div className="col-12 col-md-5 m-1">
-                        <RenderComments comments={this.props.comments} />
-                        <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <Button outline onClick={this.toggleModal}><span className="fa fa-edit fa-lg"></span> Submit Comment </Button>
-                            </NavItem>
-                        </Nav>
-                    </div>
-                </div>
+            <div>
+                <Nav className="ml-auto navbar">
+                    <NavItem>
+                        <Button outline onClick={this.toggleModal}><span className="fa fa-edit fa-lg"></span> Submit Comment </Button>
+                    </NavItem>
+                </Nav>
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
@@ -157,7 +169,7 @@ class DishDetail extends React.Component {
                                 </Col>
                             </Row>
                             <Row className="form-group">
-                                <Col md={{ size: 10}}>
+                                <Col md={{ size: 10 }}>
                                     <Button type="submit" color="primary">
                                         Submit
                                     </Button>
@@ -166,7 +178,7 @@ class DishDetail extends React.Component {
                         </LocalForm>
                     </ModalBody>
                 </Modal>
-            </div>
+            </div >
         );
     }
 }
