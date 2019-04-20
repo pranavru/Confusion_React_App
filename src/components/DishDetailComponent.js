@@ -29,7 +29,7 @@ const RenderDish = ({ dish }) => {
     }
 }
 
-const RenderComments = ({ comments }) => {
+function RenderComments({comments, addComment, dishId}) {
 
     const comment = comments.map((comment) => {
         return (
@@ -46,7 +46,7 @@ const RenderComments = ({ comments }) => {
                 <ul key={comment.id} className={'list-unstyled'}>
                     {comment}
                 </ul>
-                <CommentForm />
+                <CommentForm dishId={dishId} addComment={addComment} />
             </div>
         )
     } else {
@@ -75,7 +75,7 @@ const DishDetail = (props) => {
                 </div>
                 <div className="col-12 col-md-5 m-1">
                     <h4>Comments </h4>
-                    <RenderComments comments={props.comments} />
+                    <RenderComments comments={props.comments} dishId = {props.dish.id} addComment={props.addComment}/>
                 </div>
             </div>
         </div>
@@ -104,8 +104,7 @@ class CommentForm extends React.Component {
     }
 
     handleSubmit(values) {
-        console.log('Current State is: ' + JSON.stringify(values));
-        alert('Current State is: ' + JSON.stringify(values));
+        this.props.addComment(this.props.dishId, values.rating, values.yourName, values.comment);
         // event.preventDefault();
     }
 
@@ -171,7 +170,7 @@ class CommentForm extends React.Component {
                             </Row>
                             <Row className="form-group">
                                 <Col md={{ size: 10 }}>
-                                    <Button type="submit" color="primary">
+                                    <Button type="submit" color="primary" >
                                         Submit
                                     </Button>
                                 </Col>
